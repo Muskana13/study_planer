@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Study Planner</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    .main {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      background-color: #4CAF50;
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    details {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    summary {
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      outline: none;
+    }
+
+    textarea {
+      margin-top: 15px;
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    .two-cols {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .two-cols textarea {
+      flex: 1;
+      min-width: 45%;
+    }
+
+    .download-section {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <header>
+      <h1>📘 Study Planner</h1>
+      <p>Click each section to enter your notes and download them as a PDF.</p>
+    </header>
+
+    <details open>
+      <summary>📝 Create Tasks</summary>
+      <textarea id="tasks" placeholder="Write your tasks here..."></textarea>
+    </details>
+
+    <details>
+      <summary>📆 Plan Schedule</summary>
+      <textarea id="schedule" placeholder="Write your weekly schedule here..."></textarea>
+    </details>
+
+    <details>
+      <summary>🎯 Track Progress</summary>
+      <textarea id="progress" placeholder="Write your progress notes here..."></textarea>
+    </details>
+
+    <details>
+      <summary>📊 Marks Comparison</summary>
+      <div class="two-cols">
+        <textarea id="prevMarks" placeholder="Enter your previous marks..."></textarea>
+        <textarea id="currMarks" placeholder="Enter your present marks..."></textarea>
+      </div>
+    </details>
+
+    <div class="download-section">
+      <button class="btn" onclick="downloadPDF()">Download PDF</button>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Study Planner | Designed by Muskana Syeda</p>
+    </footer>
+  </div>
+
+  <script>
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const tasks = document.getElementById('tasks').value.trim();
+      const schedule = document.getElementById('schedule').value.trim();
+      const progress = document.getElementById('progress').value.trim();
+      const prevMarks = document.getElementById('prevMarks').value.trim();
+      const currMarks = document.getElementById('currMarks').value.trim();
+
+      let y = 10;
+      doc.setFontSize(16);
+      doc.text("📘 Study Planner Notes", 10, y);
+      y += 10;
+
+      doc.setFontSize(12);
+
+      if (tasks) {
+        doc.text("📝 Create Tasks:", 10, y);
+        y += 8;
+        const taskLines = doc.splitTextToSize(tasks, 180);
+        doc.text(taskLines, 10, y);
+        y += taskLines.length * 7 + 5;
+      }
+
+      if (schedule) {
+        doc.text("📆 Plan Schedule:", 10, y);
+        y += 8;
+        const scheduleLines = doc.splitTextToSize(schedule, 180);
+        doc.text(scheduleLines, 10, y);
+        y += scheduleLines.length * 7 + 5;
+      }
+
+      if (progress) {
+        doc.text("🎯 Track Progress:", 10, y);
+        y += 8;
+        const progressLines = doc.splitTextToSize(progress, 180);
+        doc.text(progressLines, 10, y);
+        y += progressLines.length * 7 + 5;
+      }
+
+      if (prevMarks || currMarks) {
+        doc.text("📊 Marks Comparison:", 10, y);
+        y += 8;
+
+        if (prevMarks) {
+          doc.text("Previous Marks:", 10, y);
+          const prevLines = doc.splitTextToSize(prevMarks, 180);
+          y += 6;
+          doc.text(prevLines, 10, y);
+          y += prevLines.length * 7 + 3;
+        }
+
+        if (currMarks) {
+          doc.text("Present Marks:", 10, y);
+          const currLines = doc.splitTextToSize(currMarks, 180);
+          y += 6;
+          doc.text(currLines, 10, y);
+          y += currLines.length * 7 + 3;
+        }
+      }
+
+      doc.save("study-planner.pdf");
+    }
+  </script>
+</body>
+</html>
+
+
